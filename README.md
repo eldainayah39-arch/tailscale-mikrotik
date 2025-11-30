@@ -74,31 +74,29 @@ This section follows the Mikrotik Container documentation with additional steps 
 | CONTAINER_GATEWAY | The container bridge (veth1) IP address on the router |                                              |
 | LOGIN_SERVER      | Headscale login server                        | Only required for Headscale control server. Do not set if using Tailscale       |
 | UPDATE_TAILSCALE      | Update tailscale on container startup                         |       |
-| TAILSCALE_ARGS    | Additional arguments passed to tailscale      | Optional. Note:
-```--accept-routes``` is required to accept the advertised routes of the other subnet routers.
-```--netfilter-mode``` controls the degree of firewall configuration using iptables. See [tailscale up](https://tailscale.com/kb/1241/tailscale-up). |
+| TAILSCALE_ARGS    | Additional arguments passed to tailscale      | Optional. Note:<br/> ```--accept-routes``` is required to accept the advertised routes of the other subnet routers.<br/> ```--netfilter-mode``` controls the degree of firewall configuration using iptables. See [tailscale up](https://tailscale.com/kb/1241/tailscale-up). |
 | TAILSCALED_ARGS   | Additional arguments passed to tailscaled     | Optional                                     |
 | STARTUP_SCRIPT    | Extra script to execute in container before tailscaled | Optional |
 
 Example Tailscale control server configuration:
 ```
 /container/envs
-add name="tailscale" key="PASSWORD" value="xxxxxxxxxxxxxx"
-add name="tailscale" key="AUTH_KEY" value="tskey-xxxxxxxxxxxxxxxxxxxxxxxx"
-add name="tailscale" key="ADVERTISE_ROUTES" value="192.168.88.0/24"
-add name="tailscale" key="CONTAINER_GATEWAY" value="172.17.0.1"
-add name="tailscale" key="UPDATE_TAILSCALE"
-add name="tailscale" key="TAILSCALE_ARGS" value="--accept-routes --advertise-exit-node"
+add list="tailscale" key="PASSWORD" value="xxxxxxxxxxxxxx"
+add list="tailscale" key="AUTH_KEY" value="tskey-xxxxxxxxxxxxxxxxxxxxxxxx"
+add list="tailscale" key="ADVERTISE_ROUTES" value="192.168.88.0/24"
+add list="tailscale" key="CONTAINER_GATEWAY" value="172.17.0.1"
+add list="tailscale" key="UPDATE_TAILSCALE" value="Y"
+add list="tailscale" key="TAILSCALE_ARGS" value="--accept-routes --advertise-exit-node"
 ```
 Example Headscale control server configuration:
 ```
 /container/envs
-add name="tailscale" key="PASSWORD" value="xxxxxxxxxxxxxx"
-add name="tailscale" key="AUTH_KEY" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-add name="tailscale" key="ADVERTISE_ROUTES" value="192.168.88.0/24"
-add name="tailscale" key="CONTAINER_GATEWAY" value="172.17.0.1"
-add name="tailscale" key="LOGIN_SERVER" value="http://headscale.example.com:8080"
-add name="tailscale" key="TAILSCALE_ARGS" value="--accept-routes --advertise-exit-node"
+add list="tailscale" key="PASSWORD" value="xxxxxxxxxxxxxx"
+add list="tailscale" key="AUTH_KEY" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+add list="tailscale" key="ADVERTISE_ROUTES" value="192.168.88.0/24"
+add list="tailscale" key="CONTAINER_GATEWAY" value="172.17.0.1"
+add list="tailscale" key="LOGIN_SERVER" value="http://headscale.example.com:8080"
+add list="tailscale" key="TAILSCALE_ARGS" value="--accept-routes --advertise-exit-node"
 ```
 
 Define the the mount as per below.
@@ -113,7 +111,7 @@ container. For example put it to `/var/lib/tailscale` folder and then add `START
 
 ```
 /container/envs
-add name="tailscale" key="STARTUP_SCRIPT" value="/var/lib/tailscale/startup.sh"
+add list="tailscale" key="STARTUP_SCRIPT" value="/var/lib/tailscale/startup.sh"
 ```
 
 6. Create the container
@@ -177,7 +175,7 @@ The container exposes a SSH server for management purposes using root credential
 
 ```
 /container/shell 0
-bash-5.1# 
+mikrotik/# 
 ```
 
 ## Upgrading
